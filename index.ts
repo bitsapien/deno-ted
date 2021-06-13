@@ -8,9 +8,17 @@ const tokenize = (file: string) => {
   return file.split("\n").map(line => line.split('').filter(char => !charactersToIgnore.includes(char)))
 }
 
-const convertToAST = (tokens: string[]) => {
-  const ast = []
-  return ast
+
+const collect = (line: string[], end: string) => line.filter(token => token !== end)
+
+const convertToAST = (tokens: string[][]) => {
+  return tokens.map(tokenLine => {
+    return tokenLine.flatMap((token: string, index: number) => {
+      if(token === '(') {
+        return collect(tokenLine.slice(index+1), ')')
+      }
+    }).filter(a => a)
+  })
 }
 
 // 1. Read file
@@ -25,5 +33,4 @@ console.log(tokens)
 console.log('3. Convert To data structures ...')
 const ast = convertToAST(tokens)
 console.log(ast)
-
 // 4. Interpret
